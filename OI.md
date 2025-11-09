@@ -340,11 +340,24 @@ Should show 6 tools.
 
 **Error:** `No active goal. Start a new planning session first.`
 
-**Solution:** Always call `start_planning` before using other tools:
+**Solution:** Always call `start_planning` before using other tools. The server uses persistent storage, so once you start a session, it remains active across connections:
 
 ```bash
 ./brain-trust4 call OI-Software-planning-mcp start_planning '{"goal": "Your goal here"}'
 ```
+
+### Persistent Storage
+
+**✅ The server now uses persistent storage!**
+
+- Planning sessions persist across connections
+- Data is stored in `~/.software-planning-tool/data.json`
+- The current goal is automatically loaded on each connection
+- You can call tools in separate commands without losing state
+
+**Storage Location:** `~/.software-planning-tool/data.json`
+
+This file contains all goals, plans, todos, and the current active goal ID. You can safely back up this file to preserve your planning sessions.
 
 ---
 

@@ -24,4 +24,5 @@ export interface ImplementationPlan {
 export interface StorageData {
   goals: Record<string, Goal>;
   plans: Record<string, ImplementationPlan>;
+  currentGoalId: string | null;
 }

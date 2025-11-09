@@ -6,17 +6,19 @@ The software planning tool helps you break down software projects into manageabl
 
 ---
 
-## ⚠️ IMPORTANT: Read This First
+## ✅ Persistent Storage
 
-**The server uses in-memory storage per connection.** This means:
-- Each time you call a tool, it's a NEW connection
-- Your planning session and todos are LOST between calls
-- **You need to do everything in ONE workflow** (start → add todos → get todos)
+**The server now uses persistent storage!** This means:
+- Planning sessions persist across connections
+- You can call tools in separate commands
+- Todos are saved to `~/.software-planning-tool/data.json`
+- The current goal is automatically loaded on each connection
 
-**For now, this tool works best for:**
-- Planning a project in a single session
-- Getting a structured breakdown of tasks
-- Exporting the plan to save elsewhere
+**You can now:**
+- Start a planning session in one command
+- Add todos in separate commands
+- Retrieve todos later from different connections
+- Work on multiple planning sessions (the most recent becomes the active one)
 
 ---
 
@@ -270,16 +272,21 @@ Here's a complete example of planning a React app:
 
 **Problem:** You're trying to use a tool before starting a planning session.
 
-**Solution:** Always call `start_planning` first:
+**Solution:** Always call `start_planning` first. The server persists the current goal, so once you start a session, it will remain active until you start a new one:
 ```bash
 ./brain-trust4 call OI-Software-planning-mcp start_planning '{"goal": "Your goal"}'
 ```
 
-### Error: Todos disappear between calls
+### Storage Location
 
-**Problem:** The server uses in-memory storage per connection.
+**Data is stored in:** `~/.software-planning-tool/data.json`
 
-**Solution:** This is expected behavior. Do your entire workflow in one session, or save your plan and start fresh.
+This file contains:
+- All goals you've created
+- All implementation plans and todos
+- The current active goal ID
+
+You can safely back up this file to preserve your planning sessions. Planning sessions now persist across connections, so todos are saved automatically.
 
 ### Error: "Invalid todoId"
 

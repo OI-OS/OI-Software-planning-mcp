@@ -15,7 +15,6 @@ import { Goal, Todo } from './types.js';
 
 class SoftwarePlanningServer {
   private server: Server;
-  private currentGoal: Goal | null = null;
 
   constructor() {
     this.server = new Server(
@@ -35,6 +34,10 @@ class SoftwarePlanningServer {
     this.setupToolHandlers();
     
     this.server.onerror = (error) => console.error('[MCP Error]', error);
+  }
+
+  private async getCurrentGoal(): Promise<Goal | null> {
+    return await storage.getCurrentGoal();
   }
 
   private setupResourceHandlers() {
@@ -58,7 +61,8 @@ class SoftwarePlanningServer {
     this.server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
       switch (request.params.uri) {
         case 'planning://current-goal': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidParams,
               'No active goal. Start a new planning session first.'
@@ -69,19 +73,20 @@ class SoftwarePlanningServer {
               {
                 uri: request.params.uri,
                 mimeType: 'application/json',
-                text: JSON.stringify(this.currentGoal, null, 2),
+                text: JSON.stringify(currentGoal, null, 2),
               },
             ],
           };
         }
         case 'planning://implementation-plan': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidParams,
               'No active goal. Start a new planning session first.'
             );
           }
-          const plan = await storage.getPlan(this.currentGoal.id);
+          const plan = await storage.getPlan(currentGoal.id);
           if (!plan) {
             throw new McpError(
               ErrorCode.InvalidParams,
@@ -213,8 +218,8 @@ class SoftwarePlanningServer {
       switch (request.params.name) {
         case 'start_planning': {
           const { goal } = request.params.arguments as { goal: string };
-          this.currentGoal = await storage.createGoal(goal);
-          await storage.createPlan(this.currentGoal.id);
+          const newGoal = await storage.createGoal(goal);
+          await storage.createPlan(newGoal.id);
 
           return {
             content: [
@@ -227,7 +232,8 @@ class SoftwarePlanningServer {
         }
 
         case 'save_plan': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidRequest,
               'No active goal. Start a new planning session first.'
@@ -238,7 +244,7 @@ class SoftwarePlanningServer {
           const todos = formatPlanAsTodos(plan);
 
           for (const todo of todos) {
-            await storage.addTodo(this.currentGoal.id, todo);
+            await storage.addTodo(currentGoal.id, todo);
           }
 
           return {
@@ -252,7 +258,8 @@ class SoftwarePlanningServer {
         }
 
         case 'add_todo': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidRequest,
               'No active goal. Start a new planning session first.'
@@ -263,7 +270,7 @@ class SoftwarePlanningServer {
             Todo,
             'id' | 'isComplete' | 'createdAt' | 'updatedAt'
           >;
-          const newTodo = await storage.addTodo(this.currentGoal.id, todo);
+          const newTodo = await storage.addTodo(currentGoal.id, todo);
 
           return {
             content: [
@@ -276,7 +283,8 @@ class SoftwarePlanningServer {
         }
 
         case 'remove_todo': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidRequest,
               'No active goal. Start a new planning session first.'
@@ -284,7 +292,7 @@ class SoftwarePlanningServer {
           }
 
           const { todoId } = request.params.arguments as { todoId: string };
-          await storage.removeTodo(this.currentGoal.id, todoId);
+          await storage.removeTodo(currentGoal.id, todoId);
 
           return {
             content: [
@@ -297,14 +305,15 @@ class SoftwarePlanningServer {
         }
 
         case 'get_todos': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidRequest,
               'No active goal. Start a new planning session first.'
             );
           }
 
-          const todos = await storage.getTodos(this.currentGoal.id);
+          const todos = await storage.getTodos(currentGoal.id);
 
           return {
             content: [
@@ -317,7 +326,8 @@ class SoftwarePlanningServer {
         }
 
         case 'update_todo_status': {
-          if (!this.currentGoal) {
+          const currentGoal = await this.getCurrentGoal();
+          if (!currentGoal) {
             throw new McpError(
               ErrorCode.InvalidRequest,
               'No active goal. Start a new planning session first.'
@@ -329,7 +339,7 @@ class SoftwarePlanningServer {
             isComplete: boolean;
           };
           const updatedTodo = await storage.updateTodoStatus(
-            this.currentGoal.id,
+            currentGoal.id,
             todoId,
             isComplete
           );

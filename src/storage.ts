@@ -14,6 +14,7 @@ export class Storage {
     this.data = {
       goals: {},
       plans: {},
+      currentGoalId: null,
     };
   }
 
@@ -44,8 +45,24 @@ export class Storage {
     };
 
     this.data.goals[goal.id] = goal;
+    this.data.currentGoalId = goal.id; // Set as current goal
     await this.save();
     return goal;
+  }
+
+  async getCurrentGoal(): Promise<Goal | null> {
+    if (!this.data.currentGoalId) {
+      return null;
+    }
+    return this.data.goals[this.data.currentGoalId] || null;
+  }
+
+  async setCurrentGoal(goalId: string): Promise<void> {
+    if (!this.data.goals[goalId]) {
+      throw new Error(`Goal ${goalId} does not exist`);
+    }
+    this.data.currentGoalId = goalId;
+    await this.save();
   }
 
   async getGoal(id: string): Promise<Goal | null> {
