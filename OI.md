@@ -351,13 +351,13 @@ Should show 6 tools.
 **✅ The server now uses persistent storage!**
 
 - Planning sessions persist across connections
-- Data is stored in `~/.software-planning-tool/data.json`
+- Data is stored in `MCP-servers/OI-Software-planning-mcp/data.json`
 - The current goal is automatically loaded on each connection
 - You can call tools in separate commands without losing state
 
-**Storage Location:** `~/.software-planning-tool/data.json`
+**Storage Location:** `MCP-servers/OI-Software-planning-mcp/data.json`
 
-This file contains all goals, plans, todos, and the current active goal ID. You can safely back up this file to preserve your planning sessions.
+This file contains all goals, plans, todos, and the current active goal ID. You can safely back up this file to preserve your planning sessions. The data file is stored in the server's directory, making it easy to manage and version control if needed.
 
 ---
 

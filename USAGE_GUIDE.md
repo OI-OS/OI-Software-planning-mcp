@@ -11,7 +11,7 @@ The software planning tool helps you break down software projects into manageabl
 **The server now uses persistent storage!** This means:
 - Planning sessions persist across connections
 - You can call tools in separate commands
-- Todos are saved to `~/.software-planning-tool/data.json`
+- Todos are saved to `MCP-servers/OI-Software-planning-mcp/data.json`
 - The current goal is automatically loaded on each connection
 
 **You can now:**
@@ -279,7 +279,7 @@ Here's a complete example of planning a React app:
 
 ### Storage Location
 
-**Data is stored in:** `~/.software-planning-tool/data.json`
+**Data is stored in:** `MCP-servers/OI-Software-planning-mcp/data.json`
 
 This file contains:
 - All goals you've created

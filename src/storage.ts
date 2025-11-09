@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import os from 'os';
+import { fileURLToPath } from 'url';
 import { StorageData, Goal, ImplementationPlan, Todo } from './types.js';
 
 export class Storage {
@@ -8,9 +8,15 @@ export class Storage {
   private data: StorageData;
 
   constructor() {
-    // Store data in user's home directory under .software-planning-tool
-    const dataDir = path.join(os.homedir(), '.software-planning-tool');
-    this.storagePath = path.join(dataDir, 'data.json');
+    // Store data in the OI-Software-planning-mcp directory
+    // Get the directory of the current module (src/storage.ts or build/storage.js)
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    // Go up from src/ or build/ to the server root directory
+    // In development: src/storage.ts -> src/ -> OI-Software-planning-mcp/
+    // In production: build/storage.js -> build/ -> OI-Software-planning-mcp/
+    const serverRoot = path.resolve(__dirname, '..');
+    this.storagePath = path.join(serverRoot, 'data.json');
     this.data = {
       goals: {},
       plans: {},
