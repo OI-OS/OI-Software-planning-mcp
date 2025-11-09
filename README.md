@@ -3,6 +3,22 @@
 
 A Model Context Protocol (MCP) server designed to facilitate software development planning through an interactive, structured approach. This tool helps break down complex software projects into manageable tasks, track implementation progress, and maintain detailed development plans.
 
+---
+
+## ⚠️ For AI Agents Using OI OS
+
+**If you are an AI agent installing this server in OI OS (Brain Trust 4), please see [OI.md](./OI.md) for comprehensive installation instructions, including:**
+
+- Step-by-step installation guide
+- Intent mappings and parameter rules setup
+- Parameter extractors configuration
+- Troubleshooting guide
+- Complete tool reference
+
+The OI.md file contains all the information needed for AI agents to properly configure and use this server in the OI OS environment.
+
+---
+
 <a href="https://glama.ai/mcp/servers/a35c7qc7ie">
   <img width="380" height="200" src="https://glama.ai/mcp/servers/a35c7qc7ie/badge" alt="Software Planning Tool MCP server" />
 </a>
