@@ -1,0 +1,124 @@
+{
+  "server_name": "OI-Software-planning-mcp",
+  "version": "1.0.0",
+  "intents": [
+    {
+      "keyword": "start planning",
+      "tool_name": "start_planning",
+      "priority": 10
+    },
+    {
+      "keyword": "start software planning",
+      "tool_name": "start_planning",
+      "priority": 10
+    },
+    {
+      "keyword": "plan software",
+      "tool_name": "start_planning",
+      "priority": 10
+    },
+    {
+      "keyword": "new planning session",
+      "tool_name": "start_planning",
+      "priority": 10
+    },
+    {
+      "keyword": "add todo",
+      "tool_name": "add_todo",
+      "priority": 10
+    },
+    {
+      "keyword": "create todo",
+      "tool_name": "add_todo",
+      "priority": 10
+    },
+    {
+      "keyword": "add task",
+      "tool_name": "add_todo",
+      "priority": 10
+    },
+    {
+      "keyword": "create task",
+      "tool_name": "add_todo",
+      "priority": 10
+    },
+    {
+      "keyword": "get todos",
+      "tool_name": "get_todos",
+      "priority": 10
+    },
+    {
+      "keyword": "list todos",
+      "tool_name": "get_todos",
+      "priority": 10
+    },
+    {
+      "keyword": "show todos",
+      "tool_name": "get_todos",
+      "priority": 10
+    },
+    {
+      "keyword": "get tasks",
+      "tool_name": "get_todos",
+      "priority": 10
+    },
+    {
+      "keyword": "update todo",
+      "tool_name": "update_todo_status",
+      "priority": 10
+    },
+    {
+      "keyword": "complete todo",
+      "tool_name": "update_todo_status",
+      "priority": 10
+    },
+    {
+      "keyword": "mark todo complete",
+      "tool_name": "update_todo_status",
+      "priority": 10
+    },
+    {
+      "keyword": "save plan",
+      "tool_name": "save_plan",
+      "priority": 10
+    },
+    {
+      "keyword": "save implementation plan",
+      "tool_name": "save_plan",
+      "priority": 10
+    },
+    {
+      "keyword": "remove todo",
+      "tool_name": "remove_todo",
+      "priority": 10
+    },
+    {
+      "keyword": "delete todo",
+      "tool_name": "remove_todo",
+      "priority": 10
+    }
+  ],
+  "parameter_extractors": {
+    "start_planning": {
+      "OI-Software-planning-mcp::start_planning.goal": "template:{{query}}"
+    },
+    "add_todo": {
+      "OI-Software-planning-mcp::add_todo.title": "keyword:after_todo,after_task,after_add,after_create",
+      "OI-Software-planning-mcp::add_todo.description": "template:{{query}}",
+      "OI-Software-planning-mcp::add_todo.complexity": "conditional:if_matches:\\d+|then:regex:(?:complexity|complex|difficulty|score)[\\s:]+(\\d+)|else:regex:\\b([0-9]|10)\\b",
+      "OI-Software-planning-mcp::add_todo.codeExample": "conditional:if_contains:code example,code snippet,example code|then:regex:(?:code(?:\\s+example|\\s+snippet)?|example\\s+code)[\\s:]+(.+?)(?:\\s+description|\\s+complexity|$)|else:default:null"
+    },
+    "update_todo_status": {
+      "OI-Software-planning-mcp::update_todo_status.todoId": "regex:(?:todo|task)[\\s_-]?(?:id|#)?[\\s:]+([A-Za-z0-9_-]+)|regex:\\b([A-Za-z0-9_-]{8,})\\b",
+      "OI-Software-planning-mcp::update_todo_status.isComplete": "conditional:if_contains:complete,done,finished,mark complete|then:default:true|else:conditional:if_contains:incomplete,not done,unfinished,mark incomplete|then:default:false|else:default:true"
+    },
+    "save_plan": {
+      "OI-Software-planning-mcp::save_plan.plan": "template:{{query}}"
+    },
+    "remove_todo": {
+      "OI-Software-planning-mcp::remove_todo.todoId": "regex:(?:todo|task)[\\s_-]?(?:id|#)?[\\s:]+([A-Za-z0-9_-]+)|regex:\\b([A-Za-z0-9_-]{8,})\\b"
+    }
+  },
+  "reminder_message": "Software Planning MCP server for creating and managing software implementation plans. Use direct calls for maximum reliability. Supports planning sessions, todos, and task management."
+}
+
